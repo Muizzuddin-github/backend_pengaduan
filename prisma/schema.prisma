@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @db.VarChar(20)
+  email String @unique
+  password String
+  refresh_token String?
+  tanggal_daftar DateTime @default(now())
+  pengaduan Pengaduan[]
+  palayanan pelayanan[]
+}
+
+model Kategori_pengaduan {
+  id Int @id @default(autoincrement())
+  nama String @db.VarChar(12)
+  pengaduan Pengaduan[]
+}
+
+enum pengaduanStatus{
+  terkirim
+  diproses
+  ditolak
+  selesai
+}
+
+model Pengaduan {
+  id Int @id @default(autoincrement())
+  foto String
+  lokasi String
+  deskripsi String
+  status pengaduanStatus @default(terkirim)
+  tanggal DateTime @default(now())
+  fk_kategori_pengaduan Int
+  fk_user Int
+  kategori_pengaduan Kategori_pengaduan @relation(fields: [fk_kategori_pengaduan],references: [id])
+  user User @relation(fields: [fk_user],references: [id])
+  penanganan Penanganan?
+}
+
+
+model Penanganan {
+  id Int @id @default(autoincrement())
+  foto_bukti String?
+  deskripsi String
+  tanggal DateTime @default(now())
+  fk_pengaduan Int @unique
+  pengaduan Pengaduan @relation(fields: [fk_pengaduan],references: [id])
+}
+
+model pelayanan {
+  id Int @id @default(autoincrement())
+  kritik String
+  saran String
+  fk_user Int
+  user User @relation(fields: [fk_user],references: [id])
+}
