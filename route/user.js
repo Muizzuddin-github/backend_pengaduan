@@ -1,10 +1,11 @@
 import express from 'express'
-import { getUser } from '../controllers/user.js'
+import User from '../controllers/user.js'
 
 const user = express.Router()
 
 
-user.get("/",getUser)
+user.get("/",User.get)
+user.post("/",User.post)
 
 
 export default user

@@ -1,27 +1,19 @@
 import { PrismaClient } from "@prisma/client"
-import UserVal from "../validation/UserVal.js"
-import bcryptjs from 'bcryptjs'
+import KategoriPengaduanVal from "../validation/KategoriPengaduanVal.js"
 
 const prisma = new PrismaClient()
 
-class User{
+
+class KategoriPengaduan {
     static async get(req,res){
         try{
 
-            const user = await prisma.user.findMany({
-                select : {
-                    id : true,
-                    username : true,
-                    email: true,
-                    status: true,
-                    tanggal_daftar: true
-                }
-            })
+            const kategori = await prisma.kategori_pengaduan.findMany()
             return res.status(200).json({
                 status : "OK",
-                message : "semua data user",
+                message : "semua data kategori pengaduan",
                 errors : [],
-                data : user
+                data : kategori
             })
 
         }catch(err){
@@ -37,7 +29,7 @@ class User{
     static async post(req,res){
         try{
 
-            const val = new UserVal(req.body)
+            const val = new KategoriPengaduanVal(req.body)
             val.checkType()
 
             if(val.getErrors().length){
@@ -50,9 +42,9 @@ class User{
             }
             
             val.checkLen()
-            val.checkIsEmail()
-            await val.checkUniqEmail()
-            
+            await val.uniqKategori()
+
+
             if(val.getErrors().length){
                 return res.status(400).json({
                     status : "Bad Request",
@@ -62,30 +54,19 @@ class User{
                 })
             }
 
-            const salt = bcryptjs.genSaltSync(10)
-            const hashPassword = bcryptjs.hashSync(val.password,salt)
-
-            const user = await prisma.user.create({
+            const kat = await prisma.kategori_pengaduan.create({
                 data : {
-                    username : val.username,
-                    email : val.email,
-                    password : hashPassword
-                },
-                select : {
-                    id : true,
-                    username : true,
-                    email : true,
-                    status : true,
-                    tanggal_daftar : true
+                    nama : val.nama
                 }
             })
-            
+
             return res.status(201).json({
                 status : "Created",
-                message : "berhasil menambahkan user",
+                message : "berhasil menambahkan kategori pengaduan",
                 errors : [],
-                data : [user]
+                data : [kat]
             })
+
 
         }catch(err){
             return res.status(500).json({
@@ -98,4 +79,5 @@ class User{
     }
 }
 
-export default User
+
+export default KategoriPengaduan

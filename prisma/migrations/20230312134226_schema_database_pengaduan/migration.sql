@@ -4,6 +4,7 @@ CREATE TABLE `User` (
     `username` VARCHAR(20) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
+    `status` ENUM('user', 'admin') NOT NULL DEFAULT 'user',
     `refresh_token` VARCHAR(191) NULL,
     `tanggal_daftar` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 

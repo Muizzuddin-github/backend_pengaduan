@@ -1,2 +1,28 @@
-###
+### tampilkan semua user
 GET http://localhost:8080/user
+
+### tambah user
+POST http://localhost:8080/user
+Content-Type: application/json
+
+{
+    "username" : "romi",
+    "email" : "romi@gmail.com",
+    "password" : "123456"
+}
+
+
+
+
+####################################################################################################
+### tampiilkan semua kategori pengaduan
+GET http://localhost:8080/kategori-pengaduan
+
+
+### tambah kategori pengaduan
+POST http://localhost:8080/kategori-pengaduan
+Content-Type: application/json
+
+{
+    "nama" : "Jalan Rusak"
+}

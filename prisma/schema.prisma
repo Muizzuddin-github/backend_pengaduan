@@ -10,13 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+enum statusUser {
+  user
+  admin
+}
 
 model User {
   id Int @id @default(autoincrement())
   username String @db.VarChar(20)
   email String @unique
   password String
+  status statusUser @default(user)
   refresh_token String?
   tanggal_daftar DateTime @default(now())
   pengaduan Pengaduan[]
