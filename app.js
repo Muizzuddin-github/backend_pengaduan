@@ -3,11 +3,13 @@ import user from './route/user.js'
 import kategoriPengaduan from './route/kategoriPengaduan.js'
 import ConnDB from './middlewares/connDB.js'
 import { PrismaClient } from '@prisma/client'
+import cors from 'cors'
 import morgan from 'morgan'
 const prisma = new PrismaClient()
 
 const app = express()
 
+app.use(cors())
 app.use(morgan("tiny"))
 app.use(ConnDB.check)
 app.use(express.json())
