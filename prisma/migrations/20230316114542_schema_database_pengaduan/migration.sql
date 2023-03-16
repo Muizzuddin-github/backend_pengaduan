@@ -25,7 +25,7 @@ CREATE TABLE `Pengaduan` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `foto` VARCHAR(191) NOT NULL,
     `lokasi` VARCHAR(191) NOT NULL,
-    `deskripsi` VARCHAR(191) NOT NULL,
+    `deskripsi` TEXT NOT NULL,
     `status` ENUM('terkirim', 'diproses', 'ditolak', 'selesai') NOT NULL DEFAULT 'terkirim',
     `tanggal` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fk_kategori_pengaduan` INTEGER NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE `Pengaduan` (
 CREATE TABLE `Penanganan` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `foto_bukti` VARCHAR(191) NULL,
-    `deskripsi` VARCHAR(191) NOT NULL,
+    `deskripsi` TEXT NOT NULL,
     `tanggal` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fk_pengaduan` INTEGER NOT NULL,
 
@@ -49,8 +49,8 @@ CREATE TABLE `Penanganan` (
 -- CreateTable
 CREATE TABLE `pelayanan` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `kritik` VARCHAR(191) NOT NULL,
-    `saran` VARCHAR(191) NOT NULL,
+    `kritik` TEXT NOT NULL,
+    `saran` TEXT NOT NULL,
     `fk_user` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)

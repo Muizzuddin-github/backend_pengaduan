@@ -44,7 +44,7 @@ model Pengaduan {
   id Int @id @default(autoincrement())
   foto String
   lokasi String
-  deskripsi String
+  deskripsi String @db.Text
   status pengaduanStatus @default(terkirim)
   tanggal DateTime @default(now())
   fk_kategori_pengaduan Int
@@ -58,7 +58,7 @@ model Pengaduan {
 model Penanganan {
   id Int @id @default(autoincrement())
   foto_bukti String?
-  deskripsi String
+  deskripsi String @db.Text
   tanggal DateTime @default(now())
   fk_pengaduan Int @unique
   pengaduan Pengaduan @relation(fields: [fk_pengaduan],references: [id])
@@ -66,8 +66,8 @@ model Penanganan {
 
 model pelayanan {
   id Int @id @default(autoincrement())
-  kritik String
-  saran String
+  kritik String @db.Text
+  saran String @db.Text
   fk_user Int
   user User @relation(fields: [fk_user],references: [id])
 }
