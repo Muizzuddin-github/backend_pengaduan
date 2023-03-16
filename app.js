@@ -15,6 +15,9 @@ app.use(ConnDB.check)
 app.use(express.json())
 app.use("/user",user)
 app.use("/kategori-pengaduan",kategoriPengaduan)
+app.use(function(req,res){
+    return res.send("invalid")
+})
 
 const server = app.listen(8080,function(){
     console.log("server is running")
