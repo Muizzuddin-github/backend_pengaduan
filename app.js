@@ -1,7 +1,7 @@
 import express from 'express'
 import user from './route/user.js'
 import kategoriPengaduan from './route/kategoriPengaduan.js'
-import ConnDB from './middlewares/connDB.js'
+import connDB from './middlewares/connDB.js'
 import { PrismaClient } from '@prisma/client'
 import pelayanan from './route/pelayanan.js'
 import cors from 'cors'
@@ -14,7 +14,7 @@ const app = express()
 app.use(cors({credentials : true, origin: "http://localhost:5173"}))
 app.use(cookieParser())
 app.use(morgan("tiny"))
-app.use(ConnDB.check)
+app.use(connDB)
 app.use(express.json())
 app.use("/user",user)
 app.use("/kategori-pengaduan",kategoriPengaduan)

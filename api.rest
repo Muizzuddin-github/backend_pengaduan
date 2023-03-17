@@ -6,8 +6,8 @@ POST http://localhost:8080/user
 Content-Type: application/json
 
 {
-    "username" : "muiz@gmail.com",
-    "email" : "muiz@gmail.com",
+    "username" : "ilhan@gmail.com",
+    "email" : "ilhan@gmail.com",
     "password" : "123456"
 }
 
@@ -25,6 +25,7 @@ GET http://localhost:8080/user/logout
 
 ###
 GET http://localhost:8080/pelayanan/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjc5MDIyODYzLCJleHAiOjE2NzkwMjQwNjN9.hPdfm4qYZVL_pQphxr8x7fmRgZSvrRAA-8NY1Q5TEok
 
 ###
 POST http://localhost:8080/pelayanan/
