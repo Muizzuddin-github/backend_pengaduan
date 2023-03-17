@@ -24,7 +24,20 @@ Content-Type: application/json
 GET http://localhost:8080/user/logout 
 
 ###
-GET http://localhost:8080/pelayanan
+GET http://localhost:8080/pelayanan/
+
+###
+POST http://localhost:8080/pelayanan/
+Content-Type :application/json
+
+{
+    "kritik" : "sinyal",
+    "saran" : "bangun",
+    "fk_user" : 1
+}
+
+###
+DELETE http://localhost:8080/pelayanan/7
 
 
 
