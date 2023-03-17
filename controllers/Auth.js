@@ -88,6 +88,55 @@ class Auth{
             })
         }
     }
+
+    static async logout(req,res){
+        try{
+            const refreshToken = req.cookies.refresh_token
+
+            const user = await prisma.user.findMany({
+                where : {
+                    refresh_token : refreshToken
+                }
+            })
+
+            if(!user.length){
+                return res.status(401).json({
+                    status : "Unauthorized",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["silahkan login terlebih dahulu"],
+                    accessToken : "",
+                    redirectURL : ""
+                })
+            }
+
+            await prisma.user.update({
+                where : {
+                    id : user[0].id
+                },
+                data : {
+                    refresh_token : null
+                }
+            })
+
+            res.clearCookie("refresh_token")
+
+            return res.status(200).json({
+                status : "OK",
+                message : "berhasil logut",
+                errors : [],
+                accessToken : "",
+                redirectURL : ""
+            })
+        }catch(err){
+            return res.status(500).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                accessToken : "",
+                redirectURL : ""
+            })
+        }
+    }
 }
 
 

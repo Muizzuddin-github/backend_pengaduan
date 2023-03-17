@@ -5,12 +5,14 @@ import ConnDB from './middlewares/connDB.js'
 import { PrismaClient } from '@prisma/client'
 import pelayanan from './route/pelayanan.js'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 const prisma = new PrismaClient()
 
 const app = express()
 
-app.use(cors())
+app.use(cors({credentials : true, origin: "http://localhost:5173"}))
+app.use(cookieParser())
 app.use(morgan("tiny"))
 app.use(ConnDB.check)
 app.use(express.json())
