@@ -4,23 +4,29 @@ const prisma = new PrismaClient()
 
 class KategoriPengaduanVal{
     nama = ""
+    deskripsi = ""
     #errors = []
 
     constructor(body){
         this.nama = body.nama
+        this.deskripsi = body.deskripsi
     }
 
     checkType(){
         if(typeof this.nama !== "string"){
             this.#errors.push("nama kategori pengaduan harus bertype string")
         }
+
+        if(typeof this.deskripsi !== 'string'){
+            this.#errors.push("deskripsi kategori pengaduan harus bertype string")
+        }
     }
 
     checkLen(){
         if(this.nama.length <= 2){
             this.#errors.push("nama kategori pengaduan minimal 2 karakter")
-        }else if(this.nama.length > 12){
-            this.#errors.push("nama kategori pengaduan maximal 12 karakter")
+        }else if(this.nama.length > 20){
+            this.#errors.push("nama kategori pengaduan maximal 20 karakter")
         }
     }
 

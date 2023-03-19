@@ -29,7 +29,9 @@ model User {
 
 model Kategori_pengaduan {
   id Int @id @default(autoincrement())
-  nama String @db.VarChar(12)
+  nama String @db.VarChar(20)
+  foto String
+  deskripsi String @db.Text
   pengaduan Pengaduan[]
 }
 

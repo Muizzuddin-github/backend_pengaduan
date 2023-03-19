@@ -58,3 +58,8 @@ Content-Type: application/json
 {
     "nama" : "Jalan Rusak"
 }
+
+
+
+###
+GET http://localhost:8080/gambar

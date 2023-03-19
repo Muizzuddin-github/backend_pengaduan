@@ -1,5 +1,11 @@
 import { PrismaClient } from "@prisma/client"
 import KategoriPengaduanVal from "../validation/KategoriPengaduanVal.js"
+import imgParser from "../func/imgParser.js"
+import fs from 'fs'
+import moveUploadedFile from "../func/moveUploadedFile.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import imgVal from "../validation/imgVal.js"
 
 const prisma = new PrismaClient()
 
@@ -29,10 +35,31 @@ class KategoriPengaduan {
     static async post(req,res){
         try{
 
-            const val = new KategoriPengaduanVal(req.body)
+            const checkFolder = fs.existsSync("./images")
+            if(!checkFolder){
+                fs.mkdirSync("./images")
+            }
+
+            const checkContentType = req.is('multipart/form-data')
+            if(!checkContentType){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["content type harus multipart/form-data"],
+                    data : []
+                })
+            }
+
+            const data = await imgParser(req)
+            const ubah = JSON.stringify(data)
+            const parse = JSON.parse(ubah)
+            const urlFileUpload = parse.files.gambar.filepath
+
+            const val = new KategoriPengaduanVal(parse.field)
             val.checkType()
 
             if(val.getErrors().length){
+                fs.unlinkSync(urlFileUpload)
                 return res.status(400).json({
                     status : "Bad Request",
                     message : "terjadi kesalahan diclient",
@@ -43,9 +70,10 @@ class KategoriPengaduan {
             
             val.checkLen()
             await val.uniqKategori()
-
-
+            
+            
             if(val.getErrors().length){
+                fs.unlinkSync(urlFileUpload)
                 return res.status(400).json({
                     status : "Bad Request",
                     message : "terjadi kesalahan diclient",
@@ -54,9 +82,29 @@ class KategoriPengaduan {
                 })
             }
 
+            const checkImg = new imgVal(parse.files.gambar)
+            checkImg.checkSize()
+            checkImg.checkIsImg()
+
+            if(checkImg.getErrors().length){
+                fs.unlinkSync(urlFileUpload)
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : checkImg.getErrors(),
+                    data : []
+                })
+            }
+
+
+            const gambar = moveUploadedFile(parse.files.gambar)
+            const imgUrl = `${req.protocol}://${req.headers.host}/kategori-pengaduan/gambar/${gambar}`
+
             const kat = await prisma.kategori_pengaduan.create({
                 data : {
-                    nama : val.nama
+                    nama : val.nama,
+                    foto : imgUrl,
+                    deskripsi : val.deskripsi
                 }
             })
 
@@ -72,6 +120,31 @@ class KategoriPengaduan {
             return res.status(500).json({
                 status : "Internal Server Error",
                 message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
+            })
+        }
+    }
+
+    static imgGet(req,res){
+        try{
+            const imgName = req.params.img
+            const __filename = fileURLToPath(import.meta.url)
+            const __dirname = path.dirname(__filename)
+            const __dirname2 = path.dirname(__dirname)
+    
+            const img = `/images/${imgName}`
+
+            const checkImg = fs.existsSync(`.${img}`)
+            if(!checkImg){
+                throw new Error("file tidak ditemukan")
+            }
+
+            return res.sendFile(img,{root : `${__dirname2}`})
+        }catch(err){
+            return res.status(400).json({
+                status : "Bad Request",
+                message : "terjadi kesalahan diclient",
                 errors : [err.message],
                 data : []
             })
