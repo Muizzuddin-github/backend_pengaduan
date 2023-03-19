@@ -9,6 +9,7 @@ user.get("/",User.get)
 user.post("/",User.post)
 user.post("/login",Auth.login)
 user.get("/logout",Auth.logout)
+user.get("/refresh-access-token",Auth.refreshAccessToken)
 
 
 export default user

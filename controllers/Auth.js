@@ -1,6 +1,7 @@
 import LoginVal from "../validation/LoginVal.js"
 import jwt from 'jsonwebtoken'
 import { PrismaClient } from "@prisma/client"
+import verify from "../func/verify.js"
 
 const prisma = new PrismaClient()
 
@@ -134,6 +135,59 @@ class Auth{
                 errors : [err.message],
                 accessToken : "",
                 redirectURL : ""
+            })
+        }
+    }
+
+
+    static async refreshAccessToken(req,res){
+        try{
+
+            const refreshToken = req.cookies.refresh_token
+
+            const check = await verify(refreshToken,process.env.REFRESH_KEY)
+
+            if(!check){
+                return res.status("401").json({
+                    status : "Unauthorized",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["silahkan login terlebih dahulu"],
+                    accessToken : ""
+                })
+            }
+
+            const user = await prisma.user.findMany({
+                where : {
+                    refresh_token : refreshToken
+                }
+            })
+
+
+            if(!user.length){
+                return res.status("401").json({
+                    status : "Unauthorized",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["silahkan login terlebih dahulu"],
+                    accessToken : ""
+                })
+            }
+
+            const accessToken = jwt.sign({id : user[0].id},process.env.ACCESS_KEY,{
+                expiresIn : "20m"
+            })
+
+            return res.status(200).json({
+                status : "OK",
+                message : "access token diberikan",
+                errors : [],
+                accessToken : accessToken
+            })
+        }catch(err){
+            return res.status(500).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                accessToken : ""
             })
         }
     }

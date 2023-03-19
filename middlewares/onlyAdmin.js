@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 import jwt from 'jsonwebtoken'
+import verify from "../func/verify.js"
 
 
 
@@ -8,7 +9,16 @@ const onlyAdmin = async (req,res,next) => {
     try{
 
         const refreshToken = req.cookies.refresh_token
-        jwt.verify(refreshToken,process.env.REFRESH_KEY)
+
+        const checkRefreshToken = await verify(refreshToken,process.env.REFRESH_KEY)
+
+        if(!checkRefreshToken){
+            return res.status(401).json({
+                status : "Unauthorized",
+                message : "terjadi kesalahan diclient",
+                errors : ["silahkan login terlebih dahulu"]
+            })
+        }
 
         const user = await prisma.user.findMany({
             where : {
