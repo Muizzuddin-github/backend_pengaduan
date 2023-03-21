@@ -1,4 +1,4 @@
-class imgVal{
+class ImgVal{
     #size = 0
     #mimetype = ""
     #errors = []
@@ -9,8 +9,8 @@ class imgVal{
     }
 
     checkSize(){
-        if(this.#size > 1000000){
-            this.#errors.push("maximal gambar 1mb")
+        if(this.#size > 10000000){
+            this.#errors.push("maximal gambar 10mb")
         }
     }
 
@@ -32,4 +32,4 @@ class imgVal{
     }
 }
 
-export default imgVal
+export default ImgVal

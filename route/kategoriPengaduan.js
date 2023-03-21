@@ -7,7 +7,6 @@ const kategoriPengaduan = express.Router()
 
 kategoriPengaduan.get("/",KategoriPengaduan.get)
 kategoriPengaduan.post("/",onlyAdmin,KategoriPengaduan.post)
-// kategoriPengaduan.delete("/",onlyAdmin,KategoriPengaduan.del)
 
 
 export default kategoriPengaduan

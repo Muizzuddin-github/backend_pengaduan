@@ -1,27 +1,29 @@
 import { PrismaClient } from "@prisma/client"
-import KategoriPengaduanVal from "../validation/KategoriPengaduanVal.js"
 import imgParser from "../func/imgParser.js"
 import fs from 'fs'
-import moveUploadedFile from "../func/moveUploadedFile.js"
+import PengaduanVal from "../validation/PengaduanVal.js"
 import ImgVal from "../validation/imgVal.js"
-
+import moveUploadedFile from "../func/moveUploadedFile.js"
 const prisma = new PrismaClient()
 
-
-class KategoriPengaduan {
-    static async get(req,res){
+class Pengaduan{
+    static async getAll(req,res){
         try{
+            const pengaduan = await prisma.pengaduan.findMany({
+                include : {
+                    user : true
+                }
+            })
 
-            const kategori = await prisma.kategori_pengaduan.findMany()
             return res.status(200).json({
                 status : "OK",
-                message : "semua data kategori pengaduan",
+                message : "semua data pengaduan",
                 errors : [],
-                data : kategori
+                data : pengaduan
             })
 
         }catch(err){
-            return res.status(500).json({
+            return res.status(200).json({
                 status : "Internal Server Error",
                 message : "terjadi kesalahan diserver",
                 errors : [err.message],
@@ -32,7 +34,6 @@ class KategoriPengaduan {
 
     static async post(req,res){
         try{
-
             const checkFolder = fs.existsSync("./images")
             if(!checkFolder){
                 fs.mkdirSync("./images")
@@ -48,11 +49,12 @@ class KategoriPengaduan {
                 })
             }
 
+
             const data = await imgParser(req)
             const ubah = JSON.stringify(data)
             const parse = JSON.parse(ubah)
 
-            if( typeof parse.files.foto === "undefined"){
+            if(typeof parse.files.foto === "undefined"){
                 const keyUp = Object.keys(parse.files)[0]
                 fs.unlinkSync(parse.files[keyUp].filepath)
                 return res.status(400).json({
@@ -63,30 +65,16 @@ class KategoriPengaduan {
                 })
             }
 
-            const urlFileUpload = parse.files.foto.filepath
-            const val = new KategoriPengaduanVal(parse.field)
-            val.checkType()
+            const checkPengaduan = new PengaduanVal(parse.field)
+            checkPengaduan.checkType()
+            checkPengaduan.checkLen()
 
-            if(val.getErrors().length){
-                fs.unlinkSync(urlFileUpload)
+            if(checkPengaduan.getErrors().length){
+                fs.unlinkSync(parse.files.foto.filepath)
                 return res.status(400).json({
                     status : "Bad Request",
                     message : "terjadi kesalahan diclient",
-                    errors : val.getErrors(),
-                    data : []
-                })
-            }
-            
-            val.checkLen()
-            await val.uniqKategori()
-            
-            
-            if(val.getErrors().length){
-                fs.unlinkSync(urlFileUpload)
-                return res.status(400).json({
-                    status : "Bad Request",
-                    message : "terjadi kesalahan diclient",
-                    errors : val.getErrors(),
+                    errors : checkPengaduan.getErrors(),
                     data : []
                 })
             }
@@ -96,7 +84,7 @@ class KategoriPengaduan {
             checkImg.checkIsImg()
 
             if(checkImg.getErrors().length){
-                fs.unlinkSync(urlFileUpload)
+                fs.unlinkSync(parse.files.foto.filepath)
                 return res.status(400).json({
                     status : "Bad Request",
                     message : "terjadi kesalahan diclient",
@@ -105,28 +93,29 @@ class KategoriPengaduan {
                 })
             }
 
+            const img = moveUploadedFile(parse.files.foto)
+            const imgUrl = `${req.protocol}://${req.headers.host}/gambar/${img}`
 
-            const gambar = moveUploadedFile(parse.files.foto)
-            const imgUrl = `${req.protocol}://${req.headers.host}/gambar/${gambar}`
-
-            const kat = await prisma.kategori_pengaduan.create({
+            const pengaduanInsert = await prisma.pengaduan.create({
                 data : {
-                    nama : val.nama,
                     foto : imgUrl,
-                    deskripsi : val.deskripsi
+                    lokasi : checkPengaduan.lokasi,
+                    deskripsi : checkPengaduan.deskripsi,
+                    fk_kategori_pengaduan : +checkPengaduan.kategoriPengaduan,
+                    fk_user : req.userID
                 }
             })
 
             return res.status(201).json({
                 status : "Created",
-                message : "berhasil menambahkan kategori pengaduan",
+                message : "berhasil menambah pengaduan",
                 errors : [],
-                data : [kat]
+                data : [pengaduanInsert]
             })
 
 
         }catch(err){
-            return res.status(500).json({
+            return res.status(200).json({
                 status : "Internal Server Error",
                 message : "terjadi kesalahan diserver",
                 errors : [err.message],
@@ -137,4 +126,4 @@ class KategoriPengaduan {
 }
 
 
-export default KategoriPengaduan
+export default Pengaduan
