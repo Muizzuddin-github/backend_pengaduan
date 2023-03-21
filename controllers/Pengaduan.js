@@ -10,8 +10,22 @@ class Pengaduan{
     static async getAll(req,res){
         try{
             const pengaduan = await prisma.pengaduan.findMany({
-                include : {
-                    user : true
+                where : {
+                    status : "terkirim"
+                },
+                select : {
+                    id : true,
+                    foto : true,
+                    lokasi : true,
+                    deskripsi : true,
+                    tanggal : true,
+                    user : {
+                        select : {
+                            id : true,
+                            username : true,
+                            email : true
+                        }
+                    }
                 }
             })
 
