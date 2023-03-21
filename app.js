@@ -4,6 +4,7 @@ import kategoriPengaduan from './route/kategoriPengaduan.js'
 import connDB from './middlewares/connDB.js'
 import { PrismaClient } from '@prisma/client'
 import pelayanan from './route/pelayanan.js'
+import gambar from './route/gambar.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
@@ -20,6 +21,7 @@ app.use(express.json())
 app.use("/user",user)
 app.use("/kategori-pengaduan",kategoriPengaduan)
 app.use("/pelayanan",pelayanan)
+app.use("/gambar",gambar)
 
 const server = app.listen(8080,function(){
     console.log("server is running")

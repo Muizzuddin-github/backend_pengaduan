@@ -3,8 +3,6 @@ import KategoriPengaduanVal from "../validation/KategoriPengaduanVal.js"
 import imgParser from "../func/imgParser.js"
 import fs from 'fs'
 import moveUploadedFile from "../func/moveUploadedFile.js"
-import path from "path"
-import { fileURLToPath } from "url"
 import imgVal from "../validation/imgVal.js"
 
 const prisma = new PrismaClient()
@@ -98,7 +96,7 @@ class KategoriPengaduan {
 
 
             const gambar = moveUploadedFile(parse.files.gambar)
-            const imgUrl = `${req.protocol}://${req.headers.host}/kategori-pengaduan/gambar/${gambar}`
+            const imgUrl = `${req.protocol}://${req.headers.host}/gambar/${gambar}`
 
             const kat = await prisma.kategori_pengaduan.create({
                 data : {
@@ -120,31 +118,6 @@ class KategoriPengaduan {
             return res.status(500).json({
                 status : "Internal Server Error",
                 message : "terjadi kesalahan diserver",
-                errors : [err.message],
-                data : []
-            })
-        }
-    }
-
-    static imgGet(req,res){
-        try{
-            const imgName = req.params.img
-            const __filename = fileURLToPath(import.meta.url)
-            const __dirname = path.dirname(__filename)
-            const __dirname2 = path.dirname(__dirname)
-    
-            const img = `/images/${imgName}`
-
-            const checkImg = fs.existsSync(`.${img}`)
-            if(!checkImg){
-                throw new Error("file tidak ditemukan")
-            }
-
-            return res.sendFile(img,{root : `${__dirname2}`})
-        }catch(err){
-            return res.status(400).json({
-                status : "Bad Request",
-                message : "terjadi kesalahan diclient",
                 errors : [err.message],
                 data : []
             })
