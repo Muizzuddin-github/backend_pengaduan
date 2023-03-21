@@ -49,10 +49,23 @@ const onlyAdmin = async (req,res,next) => {
             throw new Error("schema authorization salah")
         }
         
-        jwt.verify(token,process.env.ACCESS_KEY)
+        const decoded = jwt.verify(token,process.env.ACCESS_KEY)
+
+        const userAccess = await prisma.user.findMany({
+            where : {
+                id : decoded.id
+            }
+        })
+
+        if(!userAccess.length){
+            throw new Error("access token ditolak user tidak ada")
+        }
+
+        if(userAccess[0].status !== "admin"){
+            throw new Error("access token hanya boleh admin")
+        }
 
         next()
-
     }catch(err){
         return res.status(403).json({
             status : "Forbidden",
