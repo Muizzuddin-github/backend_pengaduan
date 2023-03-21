@@ -137,6 +137,45 @@ class Pengaduan{
             })
         }
     }
+
+    static async process(req,res){
+        try{
+            const pengaduan = await prisma.pengaduan.findMany({
+                where : {
+                    status : "diproses"
+                },
+                select : {
+                    id : true,
+                    foto : true,
+                    lokasi : true,
+                    deskripsi : true,
+                    tanggal : true,
+                    user : {
+                        select : {
+                            id : true,
+                            username : true,
+                            email : true
+                        }
+                    }
+                }
+            })
+
+            return res.status(200).json({
+                status : "OK",
+                message : "semua data pengaduan",
+                errors : [],
+                data : pengaduan
+            })
+
+        }catch(err){
+            return res.status(200).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
+            })
+        }
+    }
 }
 
 
