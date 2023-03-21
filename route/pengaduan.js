@@ -8,5 +8,6 @@ pengaduan.get("/",Pengaduan.getAll)
 pengaduan.post("/",onlyUser,Pengaduan.post)
 pengaduan.get("/process",Pengaduan.process)
 pengaduan.get("/selesai",Pengaduan.selesai)
+pengaduan.patch("/process/:id",Pengaduan.patch)
 
 export default pengaduan

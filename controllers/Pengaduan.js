@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import imgParser from "../func/imgParser.js"
-import fs from 'fs'
+import fs, { stat } from 'fs'
 import PengaduanVal from "../validation/PengaduanVal.js"
 import ImgVal from "../validation/imgVal.js"
 import moveUploadedFile from "../func/moveUploadedFile.js"
@@ -204,6 +204,72 @@ class Pengaduan{
                 message : "semua data pengaduan",
                 errors : [],
                 data : pengaduan
+            })
+
+        }catch(err){
+            return res.status(200).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
+            })
+        }
+    }
+
+    static async patch (req,res){
+        try{
+
+            const checkContentType = req.is("application/json")
+            if(!checkContentType){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["content type harus aplication/json"],
+                    data : []
+                })
+            }
+
+            const checkPengaduan = await prisma.pengaduan.findMany({
+                where : {
+                    id : +req.params.id
+                }
+            })
+
+            if(!checkPengaduan.length){
+                return res.status(404).json({
+                    status : "Not Found",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["pengaduan tidak ditemukan"],
+                    data : []
+                })
+            }
+
+            const status = req.body.status
+
+            if(typeof status !== "string"){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["status harus string"],
+                    data : []
+                })
+            }
+
+            const pengaduan = await prisma.pengaduan.update({
+                where : {
+                    id : +req.params.id
+                },
+                data : {
+                    status : status
+                }
+            })
+
+
+            return res.status(200).json({
+                status : "OK",
+                message : "berhasil mengubah status pengaduan",
+                errors : [],
+                data : [pengaduan]
             })
 
         }catch(err){
