@@ -19,6 +19,7 @@ class Pengaduan{
                     foto : true,
                     lokasi : true,
                     deskripsi : true,
+                    status : true,
                     tanggal : true,
                     user : {
                         select : {
@@ -175,17 +176,30 @@ class Pengaduan{
         }
     }
 
-    static async process(req,res){
+    static async status(req,res){
         try{
+
+            const statusVal = ["ditolak","diproses","selesai"]
+
+            if(!statusVal.includes(req.params.status)){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["status pengaduan tidak tersedia"],
+                    data : []
+                })
+            }
+
             const pengaduan = await prisma.pengaduan.findMany({
                 where : {
-                    status : "diproses"
+                    status : req.params.status
                 },
                 select : {
                     id : true,
                     foto : true,
                     lokasi : true,
                     deskripsi : true,
+                    status : true,
                     tanggal : true,
                     user : {
                         select : {
@@ -214,44 +228,6 @@ class Pengaduan{
         }
     }
 
-    static async selesai(req,res){
-        try{
-            const pengaduan = await prisma.pengaduan.findMany({
-                where : {
-                    status : "selesai"
-                },
-                select : {
-                    id : true,
-                    foto : true,
-                    lokasi : true,
-                    deskripsi : true,
-                    tanggal : true,
-                    user : {
-                        select : {
-                            id : true,
-                            username : true,
-                            email : true
-                        }
-                    }
-                }
-            })
-
-            return res.status(200).json({
-                status : "OK",
-                message : "semua data pengaduan",
-                errors : [],
-                data : pengaduan
-            })
-
-        }catch(err){
-            return res.status(200).json({
-                status : "Internal Server Error",
-                message : "terjadi kesalahan diserver",
-                errors : [err.message],
-                data : []
-            })
-        }
-    }
 
     static async patch (req,res){
         try{
