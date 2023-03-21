@@ -46,6 +46,42 @@ class Pengaduan{
         }
     }
 
+    static async getSingle(req,res){
+        try{
+
+            const pengaduan = await prisma.pengaduan.findMany({
+                where : {
+                    id : +req.params.id
+                }
+            })
+
+            if(!pengaduan.length){
+                return res.status(404).json({
+                    status : "Not Found",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["pengaduan tidak ditemukan"],
+                    data : []
+                })
+            }
+
+
+            return res.status(200).json({
+                status : "OK",
+                message : "data pengaduan",
+                errors : [],
+                data :  pengaduan
+            })
+
+        }catch(err){
+            return res.status(200).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
+            })
+        }
+    }
+
     static async post(req,res){
         try{
             const checkFolder = fs.existsSync("./images")
