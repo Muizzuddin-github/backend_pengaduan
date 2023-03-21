@@ -1,6 +1,6 @@
 import express from 'express'
 import KategoriPengaduan from '../controllers/KategoriPengaduan.js'
-import onlyAdmin from '../middlewares/OnlyAdmin.js'
+import onlyAdmin from '../middlewares/onlyAdmin.js'
 
 const kategoriPengaduan = express.Router()
 

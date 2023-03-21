@@ -6,6 +6,7 @@ import { PrismaClient } from '@prisma/client'
 import pelayanan from './route/pelayanan.js'
 import gambar from './route/gambar.js'
 import pengaduan from './route/pengaduan.js'
+import penangan from './route/penanganan.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
@@ -23,6 +24,7 @@ app.use("/kategori-pengaduan",kategoriPengaduan)
 app.use("/pelayanan",pelayanan)
 app.use("/gambar",gambar)
 app.use("/pengaduan",pengaduan)
+app.use("/penanganan/pengaduan",penangan)
 
 const server = app.listen(8080,function(){
     console.log("server is running")

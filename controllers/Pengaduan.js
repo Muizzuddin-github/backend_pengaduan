@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 import imgParser from "../func/imgParser.js"
-import fs, { stat } from 'fs'
+import fs from 'fs'
 import PengaduanVal from "../validation/PengaduanVal.js"
 import ImgVal from "../validation/imgVal.js"
 import moveUploadedFile from "../func/moveUploadedFile.js"
+import PenangananVal from "../validation/PenangananVal.js"
 const prisma = new PrismaClient()
 
 class Pengaduan{
