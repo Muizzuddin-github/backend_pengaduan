@@ -362,6 +362,59 @@ class Pengaduan{
             })
         }
     }
+
+    static async user(req,res){
+        try{
+
+            const statusVal = ["terkirim","ditolak","diproses","selesai"]
+
+            if(!statusVal.includes(req.params.status)){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["status pengaduan tidak tersedia"],
+                    data : []
+                })
+            }
+
+            const pengaduan = await prisma.pengaduan.findMany({
+                where : {
+                    status : req.params.status,
+                    fk_user : req.userID
+                },
+                select : {
+                    id : true,
+                    foto : true,
+                    lokasi : true,
+                    deskripsi : true,
+                    status : true,
+                    tanggal : true,
+                    user : {
+                        select : {
+                            id : true,
+                            username: true,
+                            email : true
+                        }
+                    }
+                }
+            })
+
+            return res.status(200).json({
+                status : "OK",
+                message : "semua data pengaduan",
+                errors : [],
+                data : pengaduan
+            })
+
+        }catch(err){
+            return res.status(200).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
+            })
+        }
+    }
 }
 
 
