@@ -24,19 +24,7 @@ const onlyLogin = async (req,res,next) => {
             throw new Error("silahkan login terlebih dahulu")
         }
 
-        const accessToken = req.headers.authorization
-
-        const decoded = jwt.verify(accessToken,process.env.ACCESS_KEY)
-
-        const userAccess = await prisma.user.findMany({
-            where : {
-                user : decoded.id
-            }
-        })
-
-        if(!userAccess.length){
-            throw new Error("access token dibutuhkan")
-        }
+        req.userID = user[0].id
 
         next()
 

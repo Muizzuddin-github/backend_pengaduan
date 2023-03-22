@@ -143,36 +143,7 @@ class Auth{
     static async refreshAccessToken(req,res){
         try{
 
-            const refreshToken = req.cookies.refresh_token
-
-            const check = await verify(refreshToken,process.env.REFRESH_KEY)
-
-            if(!check){
-                return res.status("401").json({
-                    status : "Unauthorized",
-                    message : "terjadi kesalahan diclient",
-                    errors : ["silahkan login terlebih dahulu"],
-                    accessToken : ""
-                })
-            }
-
-            const user = await prisma.user.findMany({
-                where : {
-                    refresh_token : refreshToken
-                }
-            })
-
-
-            if(!user.length){
-                return res.status("401").json({
-                    status : "Unauthorized",
-                    message : "terjadi kesalahan diclient",
-                    errors : ["silahkan login terlebih dahulu"],
-                    accessToken : ""
-                })
-            }
-
-            const accessToken = jwt.sign({id : user[0].id},process.env.ACCESS_KEY,{
+            const accessToken = jwt.sign({id : req.userID},process.env.ACCESS_KEY,{
                 expiresIn : "20m"
             })
 
