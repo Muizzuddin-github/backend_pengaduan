@@ -4,7 +4,7 @@ import fs from 'fs'
 import PengaduanVal from "../validation/PengaduanVal.js"
 import ImgVal from "../validation/imgVal.js"
 import moveUploadedFile from "../func/moveUploadedFile.js"
-import PenangananVal from "../validation/PenangananVal.js"
+import getDirName from "../func/getDirName.js"
 const prisma = new PrismaClient()
 
 class Pengaduan{
@@ -283,6 +283,62 @@ class Pengaduan{
                 message : "berhasil mengubah status pengaduan",
                 errors : [],
                 data : [pengaduan]
+            })
+
+        }catch(err){
+            return res.status(200).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
+            })
+        }
+    }
+
+    static async del(req,res){
+        try{
+
+            const pengaduan = await prisma.pengaduan.findMany({
+                where : {
+                    id : +req.params.id
+                }
+            })
+
+            if(!pengaduan.length){
+                return res.status(404).json({
+                    status : "Not Found",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["pengaduan tidak ditemukan"],
+                    data : []
+                })
+            }
+
+            if(pengaduan[0].status !== "terkirim"){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["status selain terkirim pengaduan tidak bisa dihapus"],
+                    data : []
+                })
+            }
+
+            const imgUrl = pengaduan[0].foto.split("/")
+            const img = imgUrl[imgUrl.length - 1]
+            const dirName = getDirName()
+            
+            fs.unlinkSync(`${dirName}/images/${img}`)
+
+            await prisma.pengaduan.delete({
+                where : {
+                    id : +req.params.id
+                }
+            })
+
+            return res.status(200).json({
+                status : "OK",
+                message : "berhasil dihapus",
+                errors : [],
+                data : []
             })
 
         }catch(err){

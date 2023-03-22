@@ -10,5 +10,6 @@ pengaduan.post("/",onlyUser,Pengaduan.post)
 pengaduan.get("/status/:status",Pengaduan.status)
 pengaduan.get("/:id",onlyAdmin,Pengaduan.getSingle)
 pengaduan.patch("/process/:id",onlyAdmin,Pengaduan.patch)
+pengaduan.delete("/:id",Pengaduan.del)
 
 export default pengaduan

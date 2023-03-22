@@ -1,14 +1,11 @@
-import path from "path"
-import { fileURLToPath } from "url"
 import fs from 'fs'
+import getDirName from "../func/getDirName.js"
 
 class Gambar{
     static getSingle(req,res){
         try{
             const imgName = req.params.img
-            const __filename = fileURLToPath(import.meta.url)
-            const __dirname = path.dirname(__filename)
-            const __dirname2 = path.dirname(__dirname)
+            const dirName = getDirName()
     
             const img = `/images/${imgName}`
 
@@ -22,7 +19,7 @@ class Gambar{
                 })
             }
 
-            return res.sendFile(img,{root : `${__dirname2}`})
+            return res.sendFile(img,{root : dirName})
         }catch(err){
             return res.status(500).json({
                 status : "Internal Server Error",
