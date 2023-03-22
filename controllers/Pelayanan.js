@@ -32,15 +32,25 @@ class Pelayanan{
         }
         static async post(req,res){
             try{
+                const checkContentType = req.is('application/json')
+                if(!checkContentType){
+                    return res.status(400).json({
+                        status : "Bad Request",
+                        message : "terjadi kesalahan diclient",
+                        errors : ["content type harus application/json"],
+                        data : []
+                    })
+                }
                 const isiKritik = req.body.kritik
                 const isisaran = req.body.saran
-                const fk_user = +req.body.fk_user
+                // const fk_user = +req.body.fk_user
                 const sendKritik = await prisma.pelayanan.create({
         
                     data : {
                         kritik : isiKritik,
                         saran : isisaran,
-                        fk_user : fk_user
+                        // fk_user : fk_user,
+                        fk_user : req.userID
                     }
                 })
                 return res.status(200).json({
