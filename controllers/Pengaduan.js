@@ -123,7 +123,7 @@ class Pengaduan{
 
             if(checkPengaduan.getErrors().length){
                 fs.unlinkSync(parse.files.foto.filepath)
-                return res.status(400).json({
+                return res.status(404).json({
                     status : "Bad Request",
                     message : "terjadi kesalahan diclient",
                     errors : checkPengaduan.getErrors(),
