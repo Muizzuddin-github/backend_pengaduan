@@ -1,7 +1,6 @@
 import LoginVal from "../validation/LoginVal.js"
 import jwt from 'jsonwebtoken'
 import { PrismaClient } from "@prisma/client"
-import verify from "../func/verify.js"
 
 const prisma = new PrismaClient()
 
