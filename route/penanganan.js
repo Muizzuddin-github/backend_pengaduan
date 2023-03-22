@@ -1,10 +1,11 @@
 import express from 'express'
 import Penanganan from '../controllers/Penanganan.js'
+import onlyAdmin from '../middlewares/onlyAdmin.js'
 
-const penangan = express.Router()
+const penanganan = express.Router()
 
-penangan.get("/",Penanganan.getAll)
-penangan.post("/:id",Penanganan.post)
+penanganan.get("/",Penanganan.getAll)
+penanganan.post("/:id",onlyAdmin,Penanganan.post)
 
 
-export default penangan
+export default penanganan
