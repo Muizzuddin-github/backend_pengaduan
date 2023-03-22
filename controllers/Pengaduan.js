@@ -131,6 +131,18 @@ class Pengaduan{
                 })
             }
 
+            await checkPengaduan.checkKategori()
+
+            if(checkPengaduan.getErrors().length){
+                fs.unlinkSync(parse.files.foto.filepath)
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : checkPengaduan.getErrors(),
+                    data : []
+                })
+            }
+
             const checkImg = new ImgVal(parse.files.foto)
             checkImg.checkSize()
             checkImg.checkIsImg()

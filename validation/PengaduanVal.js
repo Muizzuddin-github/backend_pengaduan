@@ -1,3 +1,6 @@
+import { PrismaClient } from "@prisma/client"
+const prisma = new PrismaClient()
+
 class PengaduanVal{
     lokasi = ""
     deskripsi = ""
@@ -35,6 +38,18 @@ class PengaduanVal{
 
         if(this.deskripsi.length < 5){
             this.#errors.push("deskripsi minimal 5 karakter")
+        }
+    }
+
+    async checkKategori(){
+        const kat = await prisma.kategori_pengaduan.findMany({
+            where : {
+                id : +this.kategoriPengaduan
+            }
+        })
+
+        if(!kat.length){
+            this.#errors.push("kategori pengaduan tidak ditemukan")
         }
     }
 
