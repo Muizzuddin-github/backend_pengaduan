@@ -50,7 +50,7 @@ class UserVal{
     }
 
     async checkUniqEmail(){
-        const user = await prisma.user.findMany({
+        const user = await prisma.users.findMany({
             where : {
                 email : this.email
             }

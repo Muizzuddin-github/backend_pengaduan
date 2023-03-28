@@ -20,9 +20,12 @@ const onlyAdmin = async (req,res,next) => {
             })
         }
 
-        const user = await prisma.user.findMany({
+        const user = await prisma.users.findMany({
             where : {
                 refresh_token : refreshToken
+            },
+            include : {
+                roles : true
             }
         })
 
@@ -34,7 +37,7 @@ const onlyAdmin = async (req,res,next) => {
             })
         }
 
-        if(user[0].status != "admin"){
+        if(user[0].roles.role != "Admin"){
             throw new Error("hanya boleh admin yang bisa access")
         }
 
@@ -51,9 +54,12 @@ const onlyAdmin = async (req,res,next) => {
         
         const decoded = jwt.verify(token,process.env.ACCESS_KEY)
 
-        const userAccess = await prisma.user.findMany({
+        const userAccess = await prisma.users.findMany({
             where : {
                 id : decoded.id
+            },
+            include : {
+                roles : true
             }
         })
 
@@ -61,7 +67,7 @@ const onlyAdmin = async (req,res,next) => {
             throw new Error("access token ditolak user tidak ada")
         }
 
-        if(userAccess[0].status !== "admin"){
+        if(userAccess[0].roles.role !== "Admin"){
             throw new Error("access token hanya boleh admin")
         }
 

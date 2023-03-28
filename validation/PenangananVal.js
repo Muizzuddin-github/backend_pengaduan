@@ -1,13 +1,21 @@
 class PengaduanVal{
     deskripsi = ""
+    pengaduanID = 0
     #errors = []
     constructor(data){
         this.deskripsi = data.deskripsi
+        this.pengaduanID = data.pengaduanID
     }
     
     checkType(){
         if(typeof this.deskripsi !== 'string'){
             this.#errors.push("deskripsi harus bertype string")
+        }
+
+        const check = +this.pengaduanID.toString()
+
+        if(check === "NaN"){
+            this.#errors.push("pengaduanID harus angka")
         }
     }
 

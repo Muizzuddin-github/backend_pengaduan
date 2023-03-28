@@ -5,7 +5,7 @@ import onlyAdmin from '../middlewares/onlyAdmin.js'
 const penanganan = express.Router()
 
 penanganan.get("/",Penanganan.getAll)
-penanganan.post("/:id",onlyAdmin,Penanganan.post)
+penanganan.post("/",onlyAdmin,Penanganan.post)
 
 
 export default penanganan

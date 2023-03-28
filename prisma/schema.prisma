@@ -10,19 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum statusUser {
-  user
-  admin
+
+model Roles{
+  id Int @id @default(autoincrement())
+  role String @unique
+  user Users[]
 }
 
-model User {
+model Users {
   id Int @id @default(autoincrement())
   username String @db.VarChar(20)
   email String @unique
   password String
-  status statusUser @default(user)
   refresh_token String?
   tanggal_daftar DateTime @default(now())
+  fk_role Int @default(2)
+  roles Roles @relation(fields: [fk_role],references: [id])
   pengaduan Pengaduan[]
   palayanan pelayanan[]
 }
@@ -52,7 +55,7 @@ model Pengaduan {
   fk_kategori_pengaduan Int
   fk_user Int
   kategori_pengaduan Kategori_pengaduan @relation(fields: [fk_kategori_pengaduan],references: [id])
-  user User @relation(fields: [fk_user],references: [id])
+  users Users @relation(fields: [fk_user],references: [id])
   penanganan Penanganan?
 }
 
@@ -71,5 +74,5 @@ model pelayanan {
   kritik String @db.Text
   saran String @db.Text
   fk_user Int
-  user User @relation(fields: [fk_user],references: [id])
+  users Users @relation(fields: [fk_user],references: [id])
 }

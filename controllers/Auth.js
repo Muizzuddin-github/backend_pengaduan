@@ -52,7 +52,7 @@ class Auth{
                 expiresIn : "20m"
             })
 
-            await prisma.user.update({
+            await prisma.users.update({
                 where : {
                     id : user.id
                 },
@@ -67,8 +67,7 @@ class Auth{
                 secure : false
             })
 
-            let redirectURL = (user.status != "admin") ? "/user" : "/admin"
-
+            let redirectURL = (user.status === "Admin") ? "/admin" : "/user"
 
             return res.status(200).json({
                 status : "OK",
@@ -93,7 +92,7 @@ class Auth{
         try{
             const refreshToken = req.cookies.refresh_token
 
-            const user = await prisma.user.findMany({
+            const user = await prisma.users.findMany({
                 where : {
                     refresh_token : refreshToken
                 }
@@ -109,7 +108,7 @@ class Auth{
                 })
             }
 
-            await prisma.user.update({
+            await prisma.users.update({
                 where : {
                     id : user[0].id
                 },
@@ -122,7 +121,7 @@ class Auth{
 
             return res.status(200).json({
                 status : "OK",
-                message : "berhasil logut",
+                message : "berhasil logout",
                 errors : [],
                 accessToken : "",
                 redirectURL : ""

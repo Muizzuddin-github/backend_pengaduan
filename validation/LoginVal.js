@@ -27,15 +27,20 @@ class LoginVal{
     }
 
     async checkEmailExits(){
-        const user = await prisma.user.findMany({
+        const user = await prisma.users.findMany({
             where : {
                 email : this.#email
+            },
+            include : {
+                roles : true
             }
         })
 
+        console.log(user)
+
         if(user.length){
             this.id = user[0].id
-            this.status = user[0].status
+            this.status = user[0].roles.role
             this.#passwordDB = user[0].password
         }else{
             this.#errors.push("user tidak ditemukan")

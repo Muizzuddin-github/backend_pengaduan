@@ -24,7 +24,7 @@ app.use("/kategori-pengaduan",kategoriPengaduan)
 app.use("/pelayanan",pelayanan)
 app.use("/gambar",gambar)
 app.use("/pengaduan",pengaduan)
-app.use("/penanganan/pengaduan",penanganan)
+app.use("/penanganan",penanganan)
 
 const server = app.listen(8080,function(){
     console.log("server is running")

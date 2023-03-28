@@ -18,7 +18,7 @@ class Penanganan{
                     tanggal : true,
                     pengaduan : {
                         select : {
-                            user : {
+                            users : {
                                 select : {
                                     id : true,
                                     username : true,
@@ -80,11 +80,36 @@ class Penanganan{
                 })
             }
 
+            
+            const checkBuktiPenanganan = new PenangananVal(parse.field)
+            checkBuktiPenanganan.checkType()
+
+            if(checkBuktiPenanganan.getErrors().length){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : checkBuktiPenanganan.getErrors(),
+                    data : []
+                })
+            }
+
+            checkBuktiPenanganan.checkLen()
+            
+            if(checkBuktiPenanganan.getErrors().length){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : checkBuktiPenanganan.getErrors(),
+                    data : []
+                })
+            }
+
             const checkPengaduan = await prisma.pengaduan.findMany({
                 where : {
-                    id : +req.params.id
+                    id : +checkBuktiPenanganan.pengaduanID
                 }
             })
+
 
             if(!checkPengaduan.length){
                 fs.unlinkSync(parse.files.foto_bukti.filepath)
@@ -96,9 +121,19 @@ class Penanganan{
                 })
             }
 
+            if(checkPengaduan[0].status !== "diproses"){
+                fs.unlinkSync(parse.files.foto_bukti.filepath)
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["pengaduan harus diproses terlebih dahulu"],
+                    data : []
+                })
+            }
+
             const checkPenanganan = await prisma.penanganan.findMany({
                 where : {
-                    fk_pengaduan : +req.params.id
+                    fk_pengaduan : +checkBuktiPenanganan.pengaduanID
                 }
             })
 
@@ -128,47 +163,23 @@ class Penanganan{
 
             const img = moveUploadedFile(parse.files.foto_bukti)
             const imgUrl = `${req.protocol}://${req.headers.host}/gambar/${img}`
-
-            const checkDataPengaduan = new PenangananVal(parse.field)
-            checkDataPengaduan.checkType()
-
-            if(checkDataPengaduan.getErrors().length){
-                return res.status(400).json({
-                    status : "Bad Request",
-                    message : "terjadi kesalahan diclient",
-                    errors : checkDataPengaduan.getErrors(),
-                    data : []
-                })
-            }
-
-            checkDataPengaduan.checkLen()
-            
-            if(checkDataPengaduan.getErrors().length){
-                return res.status(400).json({
-                    status : "Bad Request",
-                    message : "terjadi kesalahan diclient",
-                    errors : checkDataPengaduan.getErrors(),
-                    data : []
-                })
-            }
             
             const penangananInsert = await prisma.penanganan.create({
                 data : {
                     foto_bukti : imgUrl,
-                    deskripsi : checkDataPengaduan.deskripsi,
-                    fk_pengaduan : +req.params.id
+                    deskripsi : checkBuktiPenanganan.deskripsi,
+                    fk_pengaduan : +checkBuktiPenanganan.pengaduanID
                 }
             })
 
             await prisma.pengaduan.update({
                 where : {
-                    id : +req.params.id
+                    id : +checkBuktiPenanganan.pengaduanID
                 },
                 data : {
                     status : "selesai"
                 }
             })
-
 
             return res.status(201).json({
                 status : "Created",

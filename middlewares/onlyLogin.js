@@ -1,6 +1,5 @@
 import verify from "../func/verify.js"
 import { PrismaClient } from "@prisma/client"
-import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
@@ -14,7 +13,7 @@ const onlyLogin = async (req,res,next) => {
             throw new Error("silahkan login terlebih dahulu")
         }
         
-        const user = await prisma.user.findMany({
+        const user = await prisma.users.findMany({
             where : {
                 refresh_token : refreshToken
             }

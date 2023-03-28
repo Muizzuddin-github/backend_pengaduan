@@ -21,7 +21,7 @@ class Pengaduan{
                     deskripsi : true,
                     status : true,
                     tanggal : true,
-                    user : {
+                    users : {
                         select : {
                             id : true,
                             username : true,
@@ -54,6 +54,25 @@ class Pengaduan{
             const pengaduan = await prisma.pengaduan.findMany({
                 where : {
                     id : +req.params.id
+                },
+                select : {
+                    id : true,
+                    foto : true,
+                    lokasi : true,
+                    deskripsi : true,
+                    status : true,
+                    tanggal : true,
+                    kategori_pengaduan : {
+                        select : {
+                            nama : true
+                        }
+                    },
+                    users : {
+                        select : {
+                            username : true,
+                            email : true
+                        }
+                    }
                 }
             })
 
@@ -191,7 +210,7 @@ class Pengaduan{
     static async status(req,res){
         try{
 
-            const statusVal = ["ditolak","diproses","selesai"]
+            const statusVal = ["terkirim","ditolak","diproses","selesai"]
 
             if(!statusVal.includes(req.params.status)){
                 return res.status(400).json({
@@ -213,7 +232,7 @@ class Pengaduan{
                     deskripsi : true,
                     status : true,
                     tanggal : true,
-                    user : {
+                    users : {
                         select : {
                             id : true,
                             username : true,
@@ -243,17 +262,6 @@ class Pengaduan{
 
     static async patch (req,res){
         try{
-
-            const checkContentType = req.is("application/json")
-            if(!checkContentType){
-                return res.status(400).json({
-                    status : "Bad Request",
-                    message : "terjadi kesalahan diclient",
-                    errors : ["content type harus aplication/json"],
-                    data : []
-                })
-            }
-
             const checkPengaduan = await prisma.pengaduan.findMany({
                 where : {
                     id : +req.params.id
@@ -269,13 +277,11 @@ class Pengaduan{
                 })
             }
 
-            const status = req.body.status
-
-            if(typeof status !== "string"){
+            if(checkPengaduan[0].status !== "terkirim"){
                 return res.status(400).json({
                     status : "Bad Request",
                     message : "terjadi kesalahan diclient",
-                    errors : ["status harus string"],
+                    errors : ["pengaduan selain terkirim tidak bisa diproses"],
                     data : []
                 })
             }
@@ -285,14 +291,14 @@ class Pengaduan{
                     id : +req.params.id
                 },
                 data : {
-                    status : status
+                    status : "diproses"
                 }
             })
 
 
             return res.status(200).json({
                 status : "OK",
-                message : "berhasil mengubah status pengaduan",
+                message : "berhasil memproses pengaduan",
                 errors : [],
                 data : [pengaduan]
             })
@@ -389,7 +395,7 @@ class Pengaduan{
                     deskripsi : true,
                     status : true,
                     tanggal : true,
-                    user : {
+                    users : {
                         select : {
                             id : true,
                             username: true,

@@ -25,7 +25,7 @@ class PengaduanVal{
         const check = +this.kategoriPengaduan.toString()
 
         if(check === "NaN"){
-            this.#errors.push("kategori pengaduan harus bertype number")
+            this.#errors.push("kategori pengaduan harus angka")
         }
     }
 
