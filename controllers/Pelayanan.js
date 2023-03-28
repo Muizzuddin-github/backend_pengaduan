@@ -6,7 +6,7 @@ class Pelayanan{
             try{
                 const kritik = await prisma.pelayanan.findMany({
                     include: {
-                        user : {
+                        users : {
                             select :{
                                 id : true,
                                 username : true,
