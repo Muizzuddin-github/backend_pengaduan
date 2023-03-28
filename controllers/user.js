@@ -8,13 +8,17 @@ class User{
     static async get(req,res){
         try{
 
-            const user = await prisma.user.findMany({
+            const user = await prisma.users.findMany({
                 select : {
                     id : true,
                     username : true,
                     email: true,
-                    status: true,
-                    tanggal_daftar: true
+                    tanggal_daftar: true,
+                    roles : {
+                        select : {
+                            role : true
+                        }
+                    }
                 }
             })
             return res.status(200).json({
@@ -75,7 +79,7 @@ class User{
             const salt = bcryptjs.genSaltSync(10)
             const hashPassword = bcryptjs.hashSync(val.password,salt)
 
-            const user = await prisma.user.create({
+            const user = await prisma.users.create({
                 data : {
                     username : val.username,
                     email : val.email,
@@ -85,7 +89,6 @@ class User{
                     id : true,
                     username : true,
                     email : true,
-                    status : true,
                     tanggal_daftar : true
                 }
             })
