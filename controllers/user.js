@@ -37,6 +37,16 @@ class User{
     static async post(req,res){
         try{
 
+            const checkContentType = req.is('application/json')
+            if(!checkContentType){
+                return res.status(400).json({
+                    status : "Bad Request",
+                    message : "terjadi kesalahan diclient",
+                    errors : ["content type harus application/json"],
+                    data : []
+                })
+            }
+
             const val = new UserVal(req.body)
             val.checkType()
 
