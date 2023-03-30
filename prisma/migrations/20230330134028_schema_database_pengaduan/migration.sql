@@ -1,14 +1,14 @@
 -- CreateTable
-CREATE TABLE `Roles` (
+CREATE TABLE `roles` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `role` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `Roles_role_key`(`role`),
+    UNIQUE INDEX `roles_role_key`(`role`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Users` (
+CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(20) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
@@ -17,12 +17,12 @@ CREATE TABLE `Users` (
     `tanggal_daftar` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fk_role` INTEGER NOT NULL DEFAULT 2,
 
-    UNIQUE INDEX `Users_email_key`(`email`),
+    UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Kategori_pengaduan` (
+CREATE TABLE `kategori_pengaduan` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nama` VARCHAR(20) NOT NULL,
     `foto` VARCHAR(191) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `Kategori_pengaduan` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Pengaduan` (
+CREATE TABLE `pengaduan` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `foto` VARCHAR(191) NOT NULL,
     `lokasi` VARCHAR(191) NOT NULL,
@@ -46,14 +46,14 @@ CREATE TABLE `Pengaduan` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Penanganan` (
+CREATE TABLE `penanganan` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `foto_bukti` VARCHAR(191) NULL,
     `deskripsi` TEXT NOT NULL,
     `tanggal` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fk_pengaduan` INTEGER NOT NULL,
 
-    UNIQUE INDEX `Penanganan_fk_pengaduan_key`(`fk_pengaduan`),
+    UNIQUE INDEX `penanganan_fk_pengaduan_key`(`fk_pengaduan`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -68,16 +68,16 @@ CREATE TABLE `pelayanan` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Users` ADD CONSTRAINT `Users_fk_role_fkey` FOREIGN KEY (`fk_role`) REFERENCES `Roles`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `users` ADD CONSTRAINT `users_fk_role_fkey` FOREIGN KEY (`fk_role`) REFERENCES `roles`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pengaduan` ADD CONSTRAINT `Pengaduan_fk_kategori_pengaduan_fkey` FOREIGN KEY (`fk_kategori_pengaduan`) REFERENCES `Kategori_pengaduan`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `pengaduan` ADD CONSTRAINT `pengaduan_fk_kategori_pengaduan_fkey` FOREIGN KEY (`fk_kategori_pengaduan`) REFERENCES `kategori_pengaduan`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pengaduan` ADD CONSTRAINT `Pengaduan_fk_user_fkey` FOREIGN KEY (`fk_user`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `pengaduan` ADD CONSTRAINT `pengaduan_fk_user_fkey` FOREIGN KEY (`fk_user`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Penanganan` ADD CONSTRAINT `Penanganan_fk_pengaduan_fkey` FOREIGN KEY (`fk_pengaduan`) REFERENCES `Pengaduan`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `penanganan` ADD CONSTRAINT `penanganan_fk_pengaduan_fkey` FOREIGN KEY (`fk_pengaduan`) REFERENCES `pengaduan`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `pelayanan` ADD CONSTRAINT `pelayanan_fk_user_fkey` FOREIGN KEY (`fk_user`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `pelayanan` ADD CONSTRAINT `pelayanan_fk_user_fkey` FOREIGN KEY (`fk_user`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

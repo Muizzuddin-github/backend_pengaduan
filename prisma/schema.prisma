@@ -11,13 +11,13 @@ datasource db {
 }
 
 
-model Roles{
+model roles{
   id Int @id @default(autoincrement())
   role String @unique
-  user Users[]
+  user users[]
 }
 
-model Users {
+model users {
   id Int @id @default(autoincrement())
   username String @db.VarChar(20)
   email String @unique
@@ -25,17 +25,17 @@ model Users {
   refresh_token String?
   tanggal_daftar DateTime @default(now())
   fk_role Int @default(2)
-  roles Roles @relation(fields: [fk_role],references: [id])
-  pengaduan Pengaduan[]
+  roles roles @relation(fields: [fk_role],references: [id])
+  pengaduan pengaduan[]
   palayanan pelayanan[]
 }
 
-model Kategori_pengaduan {
+model kategori_pengaduan {
   id Int @id @default(autoincrement())
   nama String @db.VarChar(20)
   foto String
   deskripsi String @db.Text
-  pengaduan Pengaduan[]
+  pengaduan pengaduan[]
 }
 
 enum pengaduanStatus{
@@ -45,7 +45,7 @@ enum pengaduanStatus{
   selesai
 }
 
-model Pengaduan {
+model pengaduan {
   id Int @id @default(autoincrement())
   foto String
   lokasi String
@@ -54,19 +54,19 @@ model Pengaduan {
   tanggal DateTime @default(now())
   fk_kategori_pengaduan Int
   fk_user Int
-  kategori_pengaduan Kategori_pengaduan @relation(fields: [fk_kategori_pengaduan],references: [id])
-  users Users @relation(fields: [fk_user],references: [id])
-  penanganan Penanganan?
+  kategori_pengaduan kategori_pengaduan @relation(fields: [fk_kategori_pengaduan],references: [id])
+  users users @relation(fields: [fk_user],references: [id])
+  penanganan penanganan?
 }
 
 
-model Penanganan {
+model penanganan {
   id Int @id @default(autoincrement())
   foto_bukti String?
   deskripsi String @db.Text
   tanggal DateTime @default(now())
   fk_pengaduan Int @unique
-  pengaduan Pengaduan @relation(fields: [fk_pengaduan],references: [id])
+  pengaduan pengaduan @relation(fields: [fk_pengaduan],references: [id])
 }
 
 model pelayanan {
@@ -74,5 +74,5 @@ model pelayanan {
   kritik String @db.Text
   saran String @db.Text
   fk_user Int
-  users Users @relation(fields: [fk_user],references: [id])
+  users users @relation(fields: [fk_user],references: [id])
 }
