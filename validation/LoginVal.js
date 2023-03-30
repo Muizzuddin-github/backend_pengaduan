@@ -36,8 +36,6 @@ class LoginVal{
             }
         })
 
-        console.log(user)
-
         if(user.length){
             this.id = user[0].id
             this.status = user[0].roles.role
