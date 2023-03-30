@@ -64,7 +64,7 @@ class Auth{
             res.cookie("refresh_token",refreshToken,{
                 httpOnly : true,
                 maxAge : 60 * 60 * 24 * 1000,
-                secure : false
+                secure : true
             })
 
             let redirectURL = (user.status === "Admin") ? "/admin" : "/user"
