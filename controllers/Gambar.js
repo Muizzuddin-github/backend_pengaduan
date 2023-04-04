@@ -11,8 +11,8 @@ class Gambar{
 
             const checkImg = fs.existsSync(`.${img}`)
             if(!checkImg){
-                return res.status(400).json({
-                    status : "Bad Request",
+                return res.status(404).json({
+                    status : "Not Found",
                     message : "terjadi kesalahan diclient",
                     errors : ["gambar tidak ditemukan"],
                     data : []
