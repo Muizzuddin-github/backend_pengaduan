@@ -11,6 +11,7 @@ user.post("/",UserControl.post)
 user.post("/login",Auth.login)
 user.get("/logout",Auth.logout)
 user.get("/refresh-access-token",onlyLogin,Auth.refreshAccessToken)
+user.get("/islogin",onlyLogin,Auth.isLogin)
 
 
 export default user

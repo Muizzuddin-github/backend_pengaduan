@@ -64,7 +64,7 @@ class Auth{
             res.cookie("refresh_token",refreshToken,{
                 httpOnly : true,
                 maxAge : 60 * 60 * 24 * 1000,
-                secure : true
+                secure : false
             })
 
             let redirectURL = (user.status === "Admin") ? "/admin" : "/user"
@@ -157,6 +157,37 @@ class Auth{
                 message : "terjadi kesalahan diserver",
                 errors : [err.message],
                 accessToken : ""
+            })
+        }
+    }
+
+    static async isLogin(req,res){
+        try{
+
+            const user = await prisma.users.findMany({
+                where : {
+                    id : +req.userID
+                },
+                select : {
+                    id : true,
+                    username : true,
+                    email : true
+                }
+            })
+
+            return res.status(200).json({
+                status : "OK",
+                message : "sudah login",
+                errors : [],
+                data : user
+            })
+
+        }catch(err){
+            return res.status(500).json({
+                status : "Internal Server Error",
+                message : "terjadi kesalahan diserver",
+                errors : [err.message],
+                data : []
             })
         }
     }
