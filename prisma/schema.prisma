@@ -27,7 +27,7 @@ model users {
   fk_role Int @default(2)
   roles roles @relation(fields: [fk_role],references: [id])
   pengaduan pengaduan[]
-  palayanan pelayanan[]
+  kritik_saran kritik_saran[]
 }
 
 model kategori_pengaduan {
@@ -54,7 +54,7 @@ model pengaduan {
   tanggal DateTime @default(now())
   fk_kategori_pengaduan Int
   fk_user Int
-  kategori_pengaduan kategori_pengaduan @relation(fields: [fk_kategori_pengaduan],references: [id])
+  kategori_pengaduan kategori_pengaduan @relation(fields: [fk_kategori_pengaduan],references: [id], onDelete: Cascade)
   users users @relation(fields: [fk_user],references: [id])
   penanganan penanganan?
 }
@@ -66,13 +66,14 @@ model penanganan {
   deskripsi String @db.Text
   tanggal DateTime @default(now())
   fk_pengaduan Int @unique
-  pengaduan pengaduan @relation(fields: [fk_pengaduan],references: [id])
+  pengaduan pengaduan @relation(fields: [fk_pengaduan],references: [id],onDelete: Cascade)
 }
 
-model pelayanan {
+model kritik_saran {
   id Int @id @default(autoincrement())
   kritik String @db.Text
   saran String @db.Text
+  tanggal  DateTime @default(now())
   fk_user Int
   users users @relation(fields: [fk_user],references: [id])
 }
